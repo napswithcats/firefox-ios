@@ -59,7 +59,6 @@ protocol AppSettingsScreen: UIViewController {
 /// App Settings Screen (triggered by tapping the 'Gear' in the Tab Tray Controller)
 class AppSettingsTableViewController: SettingsTableViewController,
                                       AppSettingsScreen,
-                                      LegacyFeatureFlaggable, // TODO: ROUX remove with 15192
                                       FeatureFlaggable,
                                       DebugSettingsDelegate,
                                       SearchBarLocationProvider,
@@ -400,7 +399,7 @@ class AppSettingsTableViewController: SettingsTableViewController,
             generalSettings.append(SummarizeSetting(settings: self, settingsDelegate: parentCoordinator))
         }
 
-        if featureFlags.isFeatureEnabled(.translation, checking: .buildOnly) {
+        if featureFlagsProvider.isEnabled(.translation) {
             generalSettings.append(TranslationSetting(settings: self, settingsDelegate: parentCoordinator))
         }
 
@@ -462,7 +461,7 @@ class AppSettingsTableViewController: SettingsTableViewController,
         ]
 
         // Only add this toggle to the Settings if Sent from Firefox feature flag is enabled from Nimbus
-        if featureFlags.isFeatureEnabled(.sentFromFirefox, checking: .buildOnly), let profile {
+        if featureFlagsProvider.isEnabled(.sentFromFirefox), let profile {
             supportSettings.append(
                 SentFromFirefoxSetting(
                     prefs: profile.prefs,
